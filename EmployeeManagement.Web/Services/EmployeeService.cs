@@ -24,5 +24,12 @@ namespace EmployeeManagement.Web.Services
         {
             return await _httpClient.GetJsonAsync<Employee[]>("api/employees");
         }
+
+        public async Task<Employee> GetEmployee(int id)
+        {
+            // NOTE: API controller have Routes specified..
+            // call those routes instead of Controller names
+            return await _httpClient.GetJsonAsync<Employee>($"api/employees/{id}");
+        }
     }
 }

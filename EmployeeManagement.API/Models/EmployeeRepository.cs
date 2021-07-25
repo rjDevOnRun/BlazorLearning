@@ -59,6 +59,8 @@ namespace EmployeeManagement.API.Models
         public async Task<Employee> GetEmployee(int employeeId)
         {
             return await _appDbContext.Employees
+                .Include(d => d.Department)
+                //.ThenInclude(x => x.EntityNameToJoin) // Join multiple tables by this method
                 .FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
         }
 
