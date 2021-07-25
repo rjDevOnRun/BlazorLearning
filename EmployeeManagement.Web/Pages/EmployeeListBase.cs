@@ -1,4 +1,5 @@
 ﻿using EmployeeManagement.Models;
+using EmployeeManagement.Web.Services;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,18 @@ namespace EmployeeManagement.Web.Pages
     public class EmployeeListBase:ComponentBase
     {
         #region Properties
+        [Inject]
+        public IEmployeeService EmployeeService { get; set; }
 
         public IEnumerable<Employee> Employees { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            await Task.Run(LoadEmployees);
+            // Using Employee Services
+            Employees = (await EmployeeService.GetEmployees()).ToList();
+            
+            //  hard-coded method
+            //await Task.Run(LoadEmployees);
         }
 
         #endregion
@@ -84,11 +91,8 @@ namespace EmployeeManagement.Web.Pages
 
             Employees = new List<Employee> { e1, e2, e3, e4 };
         }
-
-        
+                
         #endregion
-
-
 
     }
 }

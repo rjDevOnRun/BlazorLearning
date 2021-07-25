@@ -1,3 +1,4 @@
+using EmployeeManagement.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -27,7 +28,13 @@ namespace EmployeeManagement.Web
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            //services.AddSingleton<WeatherForecastService>();
+
+            // Add the application Services here...
+            services.AddHttpClient<IEmployeeService, EmployeeService>(client =>
+            {
+                // Register the API base URI... modify as required...
+                client.BaseAddress = new Uri("https://localhost:44335/");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

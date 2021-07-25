@@ -24,7 +24,7 @@ namespace EmployeeManagement.API.Models
             return result.Entity;
         }
 
-        public async void DeleteEmployee(int employeeId)
+        public async Task<Employee> DeleteEmployee(int employeeId)
         {
             var result = await _appDbContext.Employees
                 .FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
@@ -32,7 +32,28 @@ namespace EmployeeManagement.API.Models
             {
                 _appDbContext.Employees.Remove(result);
                 await _appDbContext.SaveChangesAsync();
+
+                return result;
             }
+            return null;
+        }
+
+        public async Task<IEnumerable<Employee>> Search(string name, Gender? gender)
+        {
+            IQueryable<Employee> query = _appDbContext.Employees;
+
+            if(false == string.IsNullOrEmpty(name))
+            {
+                query = query.Where(e => e.FirstName.Contains(name) ||
+                                        e.LastName.Contains(name));
+            }
+
+            if(gender != null)
+            {
+                query = query.Where(e => e.Gender == gender);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<Employee> GetEmployee(int employeeId)
@@ -41,10 +62,18 @@ namespace EmployeeManagement.API.Models
                 .FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
         }
 
+        public async Task<Employee> GetEmployeeByEmail(string email)
+        {
+            return await _appDbContext.Employees
+                .FirstOrDefaultAsync(e => e.Email.Equals(email));
+        }
+
         public async Task<IEnumerable<Employee>> GetEmployees()
         {
             return await this._appDbContext.Employees.ToListAsync();
         }
+
+        
 
         public async Task<Employee> UpdateEmployee(Employee employee)
         {
